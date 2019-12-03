@@ -1,4 +1,5 @@
 from Cis.Queue import Queue
+from Cis.Query import Query
 from Cis.Const import *
 
 class Parser:
@@ -35,7 +36,7 @@ class Parser:
   def parseSequence(self, sequence):
     '''Proper Sequence parses, requires data to be properly cropped'''
     globals().update(self.plugin.cnf.__dict__)
-    query = self.plugin.Query()
+    query = Query()
     current = []
     phase = 'K'
     prevPhase = 'K'

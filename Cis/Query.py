@@ -1,4 +1,8 @@
+from math import ceil, log
 from Cis.Const import *
+
+# Integer to bytes
+itob = lambda x: x.to_bytes((x.bit_length() + 7) // 8, byteorder='big') or b'\x00'
 
 class Query:
   def __init__(self, key, **params):
@@ -12,7 +16,6 @@ class Query:
     return self.params[key]
 
   def build(self):
-    globals().update(self.plugin.cnf.__dict__)
     result = []
     result += [PRS + BGN]
     result += self.__buildWord__(self.key)
@@ -28,7 +31,6 @@ class Query:
     return result
 
   def __buildNumber__(self, number):
-    globals().update(self.plugin.cnf.__dict__)
     base = 64
     result = []
     TEMPNUMBER = number
@@ -56,7 +58,6 @@ class Query:
     return result
 
   def __buildWord__(self, word):
-    globals().update(self.plugin.cnf.__dict__)
     result = []
     for c in str(word):
       c = c.upper()

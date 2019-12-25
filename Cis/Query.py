@@ -62,9 +62,9 @@ class Query:
     for c in str(word):
       n = ord(c)
       if n in range(ord('a'), ord('z')+1): result += [n - ord('a')]
-      elif n in range(ord('A'), ord('Z')+1): result += [n - ord('A') + 26]
+      elif n in range(ord('A'), ord('Z')+1): result += [n - ord('A') + 27]
       else:
-        try: result += [Chars.index(c) + 52]
+        try: result += [Chars.index(c) + 54]
         except ValueError:
           raise ValueError(f'Cis strings can not contain character "{c}"')
       print(f'[CIS] {c} => {result[-1]}')

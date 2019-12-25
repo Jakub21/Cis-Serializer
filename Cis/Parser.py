@@ -65,9 +65,11 @@ class Parser:
     word = ''
     for i in data:
       i -= LTR
-      if i < 26: word += chr(i+ord('a'))
-      elif i < 26*2: word += chr(i+ord('A'))
-      else: word += Chars[i-26*2]
+      # TEMP
+      l = ''.join([chr(c) for c in range(ord('a'), ord('z')+1)])
+      l += l.upper()
+      l += Chars
+      word += l[i]
       print(f'[CIS] {i} => {word[-1]}')
     return word
 

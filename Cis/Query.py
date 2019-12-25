@@ -33,7 +33,6 @@ class Query:
   def __buildNumber__(self, number):
     base = 64
     result = []
-    TEMPNUMBER = number
     if number < 0:
       result.append(PRS + NEG)
       number *= -1
@@ -52,7 +51,8 @@ class Query:
         result += [DGT]
         break
       remaining -= amount * power
-      result.append(DGT + amount)
+      if amount == base: result += [DGT+1, DGT]
+      else: result.append(DGT + amount)
     if not len([x for x in result if x not in [DGT, PRS+NEG, PRS+DOT]]):
       result = [DGT]
     return result

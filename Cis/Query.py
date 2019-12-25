@@ -60,8 +60,8 @@ class Query:
   def __buildWord__(self, word):
     result = []
     for c in str(word):
-      if c in range('a', 'z'+1): result += [ord(c) - ord('a')]
-      elif c in range('A', 'Z'+1): result += [ord(c) - ord('A') + 26]
+      if c in range(ord('a'), ord('z')+1): result += [ord(c) - ord('a')]
+      elif c in range(ord('A'), ord('Z')+1): result += [ord(c) - ord('A') + 26]
       else:
         try: result += [Chars.index(c) + 52]
         except IndexError:

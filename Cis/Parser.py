@@ -68,6 +68,7 @@ class Parser:
       if i < 26: word += chr(i+ord('a'))
       elif i < 26*2: word += chr(i+ord('A'))
       else: word += Chars[i-26*2]
+      print(f'[CIS] {i} => {word[-1]}')
     return word
 
   def decodeNumber(self, data):

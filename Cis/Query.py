@@ -64,7 +64,7 @@ class Query:
       elif c in range(ord('A'), ord('Z')+1): result += [ord(c) - ord('A') + 26]
       else:
         try: result += [Chars.index(c) + 52]
-        except IndexError:
+        except ValueError:
           raise ValueError(f'Cis strings can not contain character "{c}"')
     return [i+LTR for i in result]
 

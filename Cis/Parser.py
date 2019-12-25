@@ -65,9 +65,9 @@ class Parser:
     word = ''
     for i in data:
       i -= LTR
-      if i == 26: word += '_'
-      elif i <= 25: word += chr(i + ord('A'))
-      else: raise ValueError(f'Letter index out of range ({i})')
+      if i < 26: word += chr(i+ord('a'))
+      elif i < 26*2: word += chr(i+ord('A'))
+      else: word += Chars[i-26*2]
     return word
 
   def decodeNumber(self, data):

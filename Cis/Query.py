@@ -60,11 +60,12 @@ class Query:
   def __buildWord__(self, word):
     result = []
     for c in str(word):
-      c = c.upper()
-      if c < 'A' or c > 'Z':
-        if c == '_': result += 26
-        else: print(f'Error "{c}"'); raise ValueError('Letter index out of range')
-      result += [ord(c) - ord('A')]
+      if c in range('a', 'z'+1): result += [ord(c) - ord('a')]
+      elif c in range('A', 'Z'+1): result += [ord(c) - ord('A') + 26]
+      else:
+        try: result += [Chars.index(c) + 52]
+        except IndexError:
+          raise ValueError(f'Cis strings can not contain character "{c}"')
     return [i+LTR for i in result]
 
   def __repr__(self):

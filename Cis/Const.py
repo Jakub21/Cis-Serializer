@@ -11,5 +11,8 @@ VAL = 4 # Start query parameter value
 NEG = 5 # Make number negative
 DOT = 6 # Decimal point
 
+# [Parsing] Non-letter characters
+Chars = '.,:!@#$%^&*'
+
 # [Numbers] Max digits after decimal point
 fractionPrecision = 2

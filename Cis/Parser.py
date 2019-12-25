@@ -63,14 +63,11 @@ class Parser:
 
   def decodeLetters(self, data):
     word = ''
+    letters = ''.join([chr(c) for c in range(ord('a'), ord('z')+1)])
+    letters += letters.upper() + Chars
     for i in data:
       i -= LTR
-      # TEMP
-      l = ''.join([chr(c) for c in range(ord('a'), ord('z')+1)])
-      l += l.upper()
-      l += Chars
-      word += l[i]
-      print(f'[CIS] {i} => {word[-1]}')
+      word += letters[i]
     return word
 
   def decodeNumber(self, data):

@@ -67,7 +67,6 @@ class Query:
         try: result += [Chars.index(c) + 52]
         except ValueError:
           raise ValueError(f'Cis strings can not contain character "{c}"')
-      print(f'[CIS] {c} => {result[-1]}')
     return [i+LTR for i in result]
 
   def __repr__(self):

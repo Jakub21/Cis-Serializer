@@ -15,7 +15,6 @@ class Parser:
 
   def parse(self):
     '''Sanitizes and splits data for parseSequence'''
-    globals().update(self.plugin.cnf.__dict__)
     sequences = []
     current = []
     inSequence = False
@@ -35,7 +34,6 @@ class Parser:
 
   def parseSequence(self, sequence):
     '''Proper Sequence parses, requires data to be properly cropped'''
-    globals().update(self.plugin.cnf.__dict__)
     query = Query()
     current = []
     phase = 'K'

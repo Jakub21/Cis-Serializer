@@ -34,10 +34,9 @@ class Parser:
 
   def parseSequence(self, sequence):
     '''Proper Sequence parses, requires data to be properly cropped'''
-    query = Query()
+    query = Query('')
     current = []
-    phase = 'K'
-    prevPhase = 'K'
+    phase, prevPhase = 'K', 'K'
     for index, entry in enumerate(sequence):
       if entry == PRS + PRM: phase = 'P'
       if entry == PRS + VAL: phase = 'V'
@@ -51,7 +50,7 @@ class Parser:
         elif first - (first % DGT) == DGT or first in (PRS + NEG, PRS + DOT):
           value = self.decodeNumber(current[1:])
         else:
-          raise Exception(f'Unrecognized sub-instruction {first}')
+          raise ValueError(f'Unrecognized sub-instruction {first}')
         query.addParam(crntParam, value)
         current = []
       if prevPhase == 'P' and phase == 'V':

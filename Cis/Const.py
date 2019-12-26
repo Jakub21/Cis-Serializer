@@ -12,7 +12,7 @@ NEG = 5 # Make number negative
 DOT = 6 # Decimal point
 
 # [Parsing] Non-letter characters
-Chars = '.,:!@#$%^&*'
+Chars = '_.,:!@#$%^&*'
 
 # [Numbers] Max digits after decimal point
 fractionPrecision = 2

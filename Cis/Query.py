@@ -1,4 +1,4 @@
-from math import ceil, log
+from math import floor, log
 from Cis.Const import *
 
 # Integer to bytes
@@ -32,29 +32,26 @@ class Query:
 
   def __buildNumber__(self, number):
     base = 64
+    if abs(number) < pow(base, -fractionPrecision): return [DGT]
     result = []
+    orig = number # TEMP
     if number < 0:
-      result.append(PRS + NEG)
+      result += [PRS+NEG]
       number *= -1
     remaining = number
-    try: exponent = ceil(log(number, base))
-    except ValueError: return [DGT]
-    if exponent < 0:
-      result.append(PRS + DOT)
+    exponent = floor(log(number, base)) + 1
+    if exponent < 0: # is a fraction
+      result += [PRS+DOT]
       result += [DGT] * -exponent
     while remaining >= pow(base, -fractionPrecision):
       exponent -= 1
-      if exponent == -1: result.append(PRS + DOT)
-      power = pow(base, exponent)
-      try: amount = remaining // power
-      except ZeroDivisionError:
-        result += [DGT]
-        break
-      remaining -= amount * power
-      if amount == base: result += [DGT+1, DGT]
-      else: result.append(DGT + amount)
-    if not len([x for x in result if x not in [DGT, PRS+NEG, PRS+DOT]]):
-      result = [DGT]
+      if exponent == -1 and PRS+DOT not in result: result += [PRS+DOT]
+      basePower = pow(base, exponent)
+      digit = remaining // basePower
+      if digit == base: digit -= 1
+      result += [DGT+digit]
+      remaining -= basePower * digit
+    if exponent > 0: result += [DGT] * exponent
     return result
 
   def __buildWord__(self, word):

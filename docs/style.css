@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300&display=swap");
+html, body {
+  background-color: #111;
+  color: #FFF;
+  margin: 0;
+}
+
+body {
+  font-size: 1.1rem;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.033em;
+  font-weight: inherit;
+}
+
+h2, a {
+  color: #38C;
+}
+
+header {
+  padding: 0.25em;
+  background-color: #222;
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  opacity: 0.7;
+  font-size: 0.8em;
+  line-height: 1.15em;
+  padding: 0.25em;
+}
+
+#Content {
+  padding: 0.25em;
+  margin-bottom: 20vh;
+}
+#Content section {
+  margin-bottom: 1em;
+  max-width: 800px;
+  margin: auto;
+  padding: 0 1em;
+}
+
+table {
+  border: 1px solid #888;
+  border-spacing: 0;
+}
+table tr {
+  margin: 0;
+}
+table tr.Head {
+  background: #333;
+}
+table td {
+  border: 1px solid #888;
+  padding: 0.33em;
+  margin: 0;
+}
+
+.Tag {
+  font-family: monospace;
+  padding: 0 0.15em;
+  margin-right: 0.3em;
+  background-color: #834;
+  color: #FFF;
+}
+
+.Bin {
+  font-family: monospace;
+}
+
+.Num {
+  font-family: monospace;
+  padding: 0 0.15em;
+  margin-right: 0.3em;
+  background-color: #834;
+}
+
+h1 {
+  color: #D3506A;
+}
+
+.Sequence {
+  display: inline-block;
+  margin: 0;
+  background-color: #333;
+  padding: 0.25em 0 0.25em 0.25em;
+}
+
+ol {
+  padding-left: 0;
+  list-style-position: inside;
+}
+ol li h4, ol li::marker {
+  color: #D3506A;
+}
+ol li h4 {
+  display: inline-block;
+  margin: 0;
+}
+
+/*# sourceMappingURL=style.css.map */

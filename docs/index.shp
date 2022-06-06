@@ -1,0 +1,148 @@
+@doctype
+$html {
+  $head {
+    %meta[charset utf-8]
+    %link[rel stylesheet href 'style.css']
+  }
+  $body {
+    $header {
+      $h1 { CIS Serializer }
+      $h4 { Reviewed documentation of Compact Instruction Sequences v1 }
+      $p {
+        This is a description on how to create and interpret serialized data. It is not specific to any implementation.
+      }
+      $p { $a[href 'https://github.com/Jakub21/oci.js'] {Repository with my original Python implementation from 2019}}
+    }
+    $div[#Content] {
+      $section {
+        $h2 {Sequences - introduction}
+        $p {Each sequence represents one dictionary-like mapping object. It has an ID and a set of named parameters. Sequence is not translated into byte strings using ASCII or any other encoding method. Instead, it is built by instructions, each being 8 bits long.}
+      }
+      $section {
+        $h2 {Instructions - introduction}
+        $p {There are 4 types of instructions. The type is encoded in 2 first bits. The remaining 6 bits contain specific value  (a kind of parameter; being 6 bits long it can range from 0 to 63). For convenience, some types and their most common values are assigned 3-letter tags. This is useful later in the documentation and helps standardize different implementations.}
+      }
+      $section {
+        $h2 {Instructions - structural}
+        $p {Structural type includes instructions that delimit different parts of the sequence. This type also includes number modifier instructions.}
+        $p {This type of instruction starts with 00}
+        $table {
+          $tr[.Head] {$td{Tag} $td{Full name} $td{Value} $td{Instruction} $td{Description}}
+          $tr {$td{$span[.Tag] {BGN}} $td{Begin} $td{0} $td[.Bin]{00 000000} $td {Sequence structure: start of the sequence}}
+          $tr {$td{$span[.Tag] {END}} $td{End} $td{1} $td[.Bin]{00 000001} $td {Sequence structure: end of the sequence}}
+          $tr {$td{$span[.Tag] {PRM}} $td{Parameter} $td{3} $td[.Bin]{00 000011} $td {Sequence structure: start of the parameter name}}
+          $tr {$td{$span[.Tag] {VAL}} $td{Value} $td{4} $td[.Bin]{00 000100} $td {Sequence structure: start of the parameter value}}
+          $tr {$td{$span[.Tag] {NEG}} $td{Negative} $td{5} $td[.Bin]{00 000101} $td {Mark the following number as negative}}
+          $tr {$td{$span[.Tag] {DOT}} $td{Decimal} $td{6} $td[.Bin]{00 000110} $td {Decimal sign for the numbers}}
+        }
+      }
+      $section {
+        $h2 {Instructions - meta}
+        $p {Meta instructions convey information about whether and how a sequence was received. They are to be processed on their own and ignored when building sequences.}
+        $p {This type of instruction starts with 01 (64)}
+        $table {
+          $tr[.Head] {$td{Tag} $td{Full name} $td{Value} $td{Instruction} $td{Description}}
+          $tr {$td{$span[.Tag] {VLD}} $td{Valid} $td{0} $td[.Bin]{01 000000} $td {Received a valid sequence}}
+          $tr {$td{$span[.Tag] {INV}} $td{Invalid} $td{2} $td[.Bin]{01 000010} $td {Received an invalid sequence}}
+          $tr {$td{$span[.Tag] {CRT}} $td{Critical} $td{7} $td[.Bin]{01 000111} $td {Critical error, possibly unrelated to the transfer}}
+        }
+      }
+      $section {
+        $h2 {Instructions - letter}
+        $p {$span[.Tag] {LTR}}
+        $p {To encode text one has to build it from letters (and a limited set of characters). Each instruction of this type contains a single letter. Uninterrupted string of these instructions creates a word.}
+        $p {This type of instruction starts with 11 (192)}
+        $table {
+          $tr[.Head] {$td{Content} $td{Value} $td{Instruction}}
+          $tr {$td{a} $td{0}  $td[.Bin]{11 000000}}
+          $tr {$td{z} $td{25} $td[.Bin]{11 011001}}
+          $tr {$td{A} $td{26} $td[.Bin]{11 011010}}
+          $tr {$td{Z} $td{51} $td[.Bin]{11 110011}}
+          $tr {$td{'_'} $td{52} $td[.Bin]{11 110100}}
+          $tr {$td{'.'} $td{53} $td[.Bin]{11 110101}}
+          $tr {$td{','} $td{54} $td[.Bin]{11 110110}}
+          $tr {$td{':'} $td{55} $td[.Bin]{11 110111}}
+          $tr {$td{'!'} $td{56} $td[.Bin]{11 111000}}
+          $tr {$td{'@'} $td{57} $td[.Bin]{11 111001}}
+          $tr {$td{'#'} $td{58} $td[.Bin]{11 111010}}
+          $tr {$td{'$'} $td{59} $td[.Bin]{11 111011}}
+          $tr {$td{'%'} $td{60} $td[.Bin]{11 111100}}
+          $tr {$td{'^'} $td{61} $td[.Bin]{11 111101}}
+          $tr {$td{'&'} $td{62} $td[.Bin]{11 111110}}
+          $tr {$td{'*'} $td{63} $td[.Bin]{11 111111}}
+        }
+      }
+      $section {
+        $h2 {Instructions - digit}
+        $p {$span[.Tag] {DGT}}
+        $p {Numbers can be created using digits. Each instruction of type conveys a base 64 digit (because each value has 6 bits). One instruction on its own can be an intiger from 0 to 63. Instruction value is the same as the digit value.}
+        $p {This type of instruction starts with 10 (128)}
+        $table {
+          $tr[.Head] {$td{Content} $td{Value} $td{Instruction}}
+          $tr {$td{0} $td{0}   $td[.Bin]{10 000000}}
+          $tr {$td{1} $td{1}   $td[.Bin]{10 000001}}
+          $tr {$td{63} $td{63} $td[.Bin]{10 111111}}
+        }
+
+      }
+      $section {
+        $h2 {Building sequences - words}
+        $p {A word is an unbroken string of instruction of letter type ( $span[.Tag]{LTR}).}
+      }
+      $section[.Build] {
+        $h2 {Building sequences - numbers}
+        $p {Numbers are created with (base 64) digits and structural instructions "Negative" and "Decimal". See examples below.}
+        $table {
+          $tr[.Head] {$td{Number} $td{Sequence}}
+          $tr {$td{1} $td{$span[.Tag] {DGT 1}}}
+          $tr {$td{-40} $td{$span[.Tag]{NEG} $span[.Tag] {DGT 40}}}
+          $tr {$td{66 (64+2)} $td{$span[.Tag]{DGT 1} $span[.Tag]{DGT 2}}}
+          $tr {$td{158 (128+30)} $td{$span[.Tag]{DGT 2} $span[.Tag]{DGT 30}}}
+          $tr {$td{0.75 (48/64)} $td{$span[.Tag]{DOT} $span[.Tag]{DGT 48}}}
+          $tr {$td{2.00073... (2 + 3/4096)} $td{$span[.Tag]{DGT 2} $span[.Tag]{DOT} $span[.Tag]{DGT 0} $span[.Tag]{DGT 3}}}
+        }
+      }
+      $section {
+        $h2 {Building sequences - structure}
+        $p {For a sequence to be valid it has to have both delimiting tags and an ID. Its ID must be a word. The example below creates a sequence with ID "Hello"}
+        $p[.Sequence] {$span[.Tag]{BGN} $span[.Tag]{LTR H} $span[.Tag]{LTR e} $span[.Tag]{LTR l} $span[.Tag]{LTR l} $span[.Tag]{LTR o} $span[.Tag]{END}}
+        $p {Which would look like this if specific values were shown instead of tags.}
+        $p[.Sequence] {$span[.Num]{00000000} $span[.Num]{11000111} $span[.Num]{11000100} $span[.Num]{11001011} $span[.Num]{11001011} $span[.Num]{11001110} $span[.Num]{00000001}}
+        $p {or in hexadecimal}
+        $span[.Sequence] {$span[.Num]{00} $span[.Num]{C7} $span[.Num]{C4} $span[.Num]{CB} $span[.Num]{CB} $span[.Num]{CE} $span[.Num]{01}}
+        $p {From now in I will merge repeated letter and digit instructions for easier viewing, like below.}
+        $p[.Sequence] {$span[.Tag]{BGN} $span[.Tag]{LTR "Hello"} $span[.Tag]{END}}
+        $p {This however does not convey too much information and is inefficient on its own. The point of this project is serialization of mappings. To add map entries, parameters are to be used. All parameters need a name and a value. The name has to be a word. Structural instructions are used to mark start of both name and value. Any mapping where keys are strings and values are either strings or numbers can be encoded. Just keep in mind the limited set of characters.}
+        $p {The example below creates a sequence with ID "Greet" and a parameter named "who" with value "World"}
+        $p[.Sequence] {$span[.Tag]{BGN} $span[.Tag]{LTR "Greet"}
+          $span[.Tag]{PRM} $span[.Tag]{LTR "who"} $span[.Tag]{VAL} $span[.Tag]{LTR "World"} $span[.Tag]{END}}
+        $p {Parameter value can be either a word or a number and any number of them can be added. The example below creates a sequence with id "Shopping", text parameter "where" with value "bakery" and a numerical parameter "buns" with value 6}
+        $p[.Sequence] {$span[.Tag]{BGN} $span[.Tag]{LTR "Shopping"}
+          $span[.Tag]{PRM} $span[.Tag]{LTR "where"} $span[.Tag]{VAL} $span[.Tag]{LTR "bakery"}
+          $span[.Tag]{PRM} $span[.Tag]{LTR "buns"} $span[.Tag]{VAL} $span[.Tag]{DGT 6} $span[.Tag]{END}}
+      }
+      $section {
+        $h2 {Limitations}
+        $ol {
+          $li {
+            $h4 {Limited set of characters}
+            $p {It is not possible to encode full UTF-8 (or even full ASCII) with this method.}
+          }
+          $li {
+            $h4 {No support for arrays and nesting}
+            $p {One can not encode an array (or any other collection). Also it is not possible to nest a sequence inside another.}
+          }
+          $li {
+            $h4 {Fractions precision}
+            $p {It might not be very clear how many digits are required to encode a fraction. After decimal point each digit multiplies the precision by 64. 1 digit after the decimal point can encode all multiplies of 1/64. (2 can encode all multiplies of 1/4096 and 3 all multiplies of 1/262144 and so on)}
+          }
+        }
+      }
+    }
+    $footer {
+      Project: 2019 Q4 %br
+      Documentation: 2022 Q2 %br
+      Jakub21
+    }
+  }
+}

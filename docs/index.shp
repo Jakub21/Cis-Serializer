@@ -11,7 +11,7 @@ $html {
       $p {
         This is a description on how to create and interpret serialized data. It is not specific to any implementation.
       }
-      $p { $a[href 'https://github.com/Jakub21/oci.js'] {Repository with my original Python implementation from 2019}}
+      $p { $a[href 'https://github.com/Jakub21/Cis-Protocol'] {Repository with my original Python implementation from 2019}}
     }
     $div[#Content] {
       $section {
